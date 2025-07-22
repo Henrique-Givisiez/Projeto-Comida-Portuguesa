@@ -6,21 +6,20 @@
 
 ## User stories a serem feitas
 
-- Abertura de Comanda (13 pontos)
+- Abertura de Comanda (12 pontos)
 
 > **Como cliente**, quero digitar meu nome e abrir uma comanda, para que eu possa começar a fazer meus pedidos.
 > 
 
 | Etapa | Tarefa | Esforço |
 | --- | --- | --- |
-| Design | Criar design da tela de abertura de comanda e seus componentes | 2 pts |
-| Frontend - UI | Criar componente de formulário com input para nome | 2 pts |
-| Frontend - UI | Criar botão "Abrir Comanda" e desativar se nome estiver vazio | 1 pt |
-| Backend - API | Criar rota `POST /comandas` para abrir nova comanda | 2 pts |
-| Backend - Lógica | Gerar ID único da comanda e armazenar nome + data + status inicial | 2 pts |
-| Integração Front x Back | Consumir API de criação de comanda e armazenar ID no frontend | 2 pts |
-| Estado e Navegação | Redirecionar para página de cardápio após criação | 1 pt |
-| Validação e UX | Adicionar feedback de erro/sucesso na abertura | 1 pt |
+| Design | Criar design da tela de abertura de comanda e seus componentes | 3 pts |
+| Frontend | Criar componente de formulário com input para nome | 1 pt |
+| Frontend | Criar botão "Abrir Comanda" e desativar se nome estiver vazio | 1 pt |
+| Backend  | Criar rotas CRUD `/comandas` para comandas | 2 pts |
+| Frontend | Redirecionar para página de cardápio após criação | 1 pt |
+| Backend  | Adicionar feedback de erro/sucesso na abertura da comanda | 1 pt |
+| Testes   | Testar rotas CRUD por meio de script de testes unitários | 3 pt |
 
 - Definição da Mesa (com senha) (14 pontos)
 
