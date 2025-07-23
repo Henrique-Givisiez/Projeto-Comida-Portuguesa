@@ -1,20 +1,59 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Comanda {
+  id           String   @id @default(uuid())
+  nomeCliente  String
+  dataCriacao  DateTime @default(now())
+  numeroMesa   Int
 
-    @@index([name])
+  pedidos      Pedido[]
+}
+
+model Pedido {
+  id                 String      @id @default(uuid())
+  comandaId          String
+  status             Status
+  dataCriacao        DateTime    @default(now())
+  ultimaAtualizacao  DateTime    @updatedAt
+
+  comanda            Comanda     @relation(fields: [comandaId], references: [id])
+  itens              PedidoItem[]
+}
+
+model PedidoItem {
+  id          String   @id @default(uuid())
+  pedidoId    String
+  itemId      String
+  quantidade  Int
+  observacao  String?
+  dataCriacao DateTime @default(now())
+
+  pedido      Pedido   @relation(fields: [pedidoId], references: [id])
+  item        Item     @relation(fields: [itemId], references: [id])
+}
+
+model Item {
+  id          String   @id @default(uuid())
+  nome        String
+  descricao   String
+  preco       Float
+  imageURL    String
+  categoria   String
+  disponivel  Boolean
+
+  pedidoItens PedidoItem[]
+}
+
+enum Status {
+  EM_ANDAMENTO
+  ENTREGUE
+  FINALIZADO
+  CANCELADO
 }
