@@ -1,11 +1,12 @@
 'use client'
-import React, { useState } from 'react';
-import Button from "./_components/button";
-import { Input } from './_components/input';
-import { Settings, UtensilsCrossed } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './_components/dialog';
-import { toast } from 'sonner';
+import { Settings, UtensilsCrossed } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Input } from './_components/input';
+import Button from "./_components/button";
+import React, { useState } from 'react';
 import { api } from '~/utils/api';
+import { toast } from 'sonner';
 
 export default function Home() {
   const createComanda = api.comanda.create.useMutation();
@@ -27,9 +28,8 @@ export default function Home() {
         numeroMesa: Number(tableNumber),
       });
 
-      toast.success(`Comanda aberta para ${comanda.nomeCliente} na mesa ${comanda.numeroMesa}`);
-      // Aqui você pode redirecionar para a página do cardápio
-      // Ex: router.push(`/cardapio/${comanda.id}`)
+      useRouter().push(`/cardapio/${comanda.id}`)
+
     } catch (error: any) {
       toast.error(error?.message || 'Erro ao abrir comanda');
     }
