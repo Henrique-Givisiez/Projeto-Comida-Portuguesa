@@ -4,32 +4,41 @@ import Button from "./_components/button";
 import { Input } from './_components/input';
 import { Settings, UtensilsCrossed } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './_components/dialog';
+import { toast } from 'sonner';
 
 export default function Home() {
   const [customerName, setCustomerName] = useState('');
   const [tableNumber, setTableNumber] = useState('1');
+  const [tempTableNumber, setTempTableNumber] = useState('1');
   const [password, setPassword] = useState('');
   const [isTableDialogOpen, setIsTableDialogOpen] = useState(false);
 
   const handleOpenComanda = () => {
     if (!customerName.trim()) {
+      toast.error('Por favor, digite seu nome para abrir a comanda.');
       return;
     }
+
+    toast.success(`Comanda aberta para ${customerName} na mesa ${tableNumber}`);
 
   };
 
   const handleTableNumberChange = () => {
     if (password !== 'garcom123') {
+      toast.error('Senha incorreta. Tente novamente.');
       setPassword('');
       return;
     }
+
+    setTableNumber(tempTableNumber);
+    toast.success(`Mesa alterada para ${tempTableNumber}`);
     
     setIsTableDialogOpen(false);
     setPassword('');
   };
 
   return (
-    <div className="min-h-screen bg-[#f5e6da] flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen bg-linear-to-b from-[#f5e6da] to-[#fff5cc] flex flex-col items-center justify-center p-6">
       <div className="relative z-10 w-full max-w-md">
         {/* Logo */}
         <div className="relative">
@@ -91,7 +100,7 @@ export default function Home() {
 
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Configurações da Mesa</DialogTitle>
+              <DialogTitle>Configurações da Mesa {tableNumber}</DialogTitle>
             </DialogHeader>
           <div className="space-y-4 pt-4">
                 <div>
@@ -103,8 +112,8 @@ export default function Home() {
                     type="number"
                     min="1"
                     max="50"
-                    value={tableNumber}
-                    onChange={(e) => setTableNumber(e.target.value)}
+                    value={tempTableNumber}
+                    onChange={(e) => setTempTableNumber(e.target.value)}
                     className="border-azulejo-medium focus:border-portuguese-gold"
                   />
                 </div>
