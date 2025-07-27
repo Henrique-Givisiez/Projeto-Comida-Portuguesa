@@ -5,26 +5,39 @@ import { Input } from './_components/input';
 import { Settings, UtensilsCrossed } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './_components/dialog';
 import { toast } from 'sonner';
+import { api } from '~/utils/api';
 
 export default function Home() {
+  const createComanda = api.comanda.create.useMutation();
   const [customerName, setCustomerName] = useState('');
   const [tableNumber, setTableNumber] = useState('1');
   const [tempTableNumber, setTempTableNumber] = useState('1');
   const [password, setPassword] = useState('');
   const [isTableDialogOpen, setIsTableDialogOpen] = useState(false);
 
-  const handleOpenComanda = () => {
+  const handleOpenComanda = async () => {
     if (!customerName.trim()) {
       toast.error('Por favor, digite seu nome para abrir a comanda.');
       return;
     }
 
-    toast.success(`Comanda aberta para ${customerName} na mesa ${tableNumber}`);
+    try {
+      const comanda = await createComanda.mutateAsync({
+        nomeCliente: customerName.trim(),
+        numeroMesa: Number(tableNumber),
+      });
 
+      toast.success(`Comanda aberta para ${comanda.nomeCliente} na mesa ${comanda.numeroMesa}`);
+      // Aqui você pode redirecionar para a página do cardápio
+      // Ex: router.push(`/cardapio/${comanda.id}`)
+    } catch (error: any) {
+      toast.error(error?.message || 'Erro ao abrir comanda');
+    }
   };
 
+
   const handleTableNumberChange = () => {
-    if (password !== 'garcom123') {
+    if (password !== '123') {
       toast.error('Senha incorreta. Tente novamente.');
       setPassword('');
       return;

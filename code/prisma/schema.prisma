@@ -12,7 +12,7 @@ model Comanda {
   nomeCliente  String
   dataCriacao  DateTime @default(now())
   numeroMesa   Int
-
+  finalizada   Boolean @default(false)
   pedidos      Pedido[]
 }
 
