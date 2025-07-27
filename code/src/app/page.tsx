@@ -1,53 +1,158 @@
-import Link from "next/link";
+'use client'
+import React, { useState } from 'react';
+import Button from "./_components/button";
+import { Input } from './_components/input';
+import { Settings, UtensilsCrossed } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './_components/dialog';
+import { toast } from 'sonner';
 
-import { LatestPost } from "~/app/_components/post";
-import { api, HydrateClient } from "~/trpc/server";
+export default function Home() {
+  const [customerName, setCustomerName] = useState('');
+  const [tableNumber, setTableNumber] = useState('1');
+  const [tempTableNumber, setTempTableNumber] = useState('1');
+  const [password, setPassword] = useState('');
+  const [isTableDialogOpen, setIsTableDialogOpen] = useState(false);
 
-export default async function Home() {
-  const hello = await api.post.hello({ text: "from tRPC" });
+  const handleOpenComanda = () => {
+    if (!customerName.trim()) {
+      toast.error('Por favor, digite seu nome para abrir a comanda.');
+      return;
+    }
 
-  void api.post.getLatest.prefetch();
+    toast.success(`Comanda aberta para ${customerName} na mesa ${tableNumber}`);
+
+  };
+
+  const handleTableNumberChange = () => {
+    if (password !== 'garcom123') {
+      toast.error('Senha incorreta. Tente novamente.');
+      setPassword('');
+      return;
+    }
+
+    setTableNumber(tempTableNumber);
+    toast.success(`Mesa alterada para ${tempTableNumber}`);
+    
+    setIsTableDialogOpen(false);
+    setPassword('');
+  };
 
   return (
-    <HydrateClient>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-            Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-          </h1>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/usage/first-steps"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">First Steps →</h3>
-              <div className="text-lg">
-                Just the basics - Everything you need to know to set up your
-                database and authentication.
-              </div>
-            </Link>
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/introduction"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">Documentation →</h3>
-              <div className="text-lg">
-                Learn more about Create T3 App, the libraries it uses, and how
-                to deploy it.
-              </div>
-            </Link>
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl text-white">
-              {hello ? hello.greeting : "Loading tRPC query..."}
+    <div className="min-h-screen bg-linear-to-b from-[#f5e6da] to-[#fff5cc] flex flex-col items-center justify-center p-6">
+      <div className="relative z-10 w-full max-w-md">
+        {/* Logo */}
+        <div className="relative">
+          <img 
+            src="/Logo.png" 
+            alt="Comida Portuguesa Com Certeza" 
+            className="absolute top-[-15rem] left-1/2 -translate-x-1/2 h-60 w-auto object-contain z-20"
+          />
+        </div>
+
+        {/* Card Boas Vindas */}
+        <div className="bg-white rounded-xl shadow-[0_4px_14px_rgba(0,0,0,0.1)] p-8 mb-4">
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-bold text-[#002b5c] mb-2">
+              Bem-vindo!
+            </h1>
+            <p className="text-[#6c757d]">
+              Digite seu nome para começar seu pedido
             </p>
           </div>
 
-          <LatestPost />
+          {/* Nome Cliente Input */}
+          <div className="space-y-6">
+            <div>
+              <Input
+                type="text"
+                placeholder="Digite seu nome para abrir a comanda"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                className="h-14 text-lg border-2 border-[#729bbf] focus:border-[#f4c542] transition-colors"
+                aria-label="Nome do cliente"
+                />
+            </div>
+
+            {/* Abrir Comanda Button */}
+            <Button
+              onClick={handleOpenComanda}
+              disabled={!customerName.trim()}
+              variant="restaurant"
+              size="lg"
+              className="w-full h-14 text-lg"
+              aria-label="Abrir comanda"
+              >
+              <UtensilsCrossed className="mx-1 w-5 h-5" />
+              Abrir Comanda
+            </Button>
+          </div>
         </div>
-      </main>
-    </HydrateClient>
+      </div>
+
+      {/* Alterar mesa Modal */}
+      <div className="flex justify-center">
+        <Dialog open={isTableDialogOpen} onOpenChange={setIsTableDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="settings" className="h-12 w-12">
+              <Settings className="w-5 h-5" />
+            </Button>
+          </DialogTrigger>
+
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Configurações da Mesa {tableNumber}</DialogTitle>
+            </DialogHeader>
+          <div className="space-y-4 pt-4">
+                <div>
+                  <label htmlFor="table-number" className="text-sm font-medium text-portuguese-blue mb-2 block">
+                    Número da Mesa
+                  </label>
+                  <Input
+                    id="table-number"
+                    type="number"
+                    min="1"
+                    max="50"
+                    value={tempTableNumber}
+                    onChange={(e) => setTempTableNumber(e.target.value)}
+                    className="border-azulejo-medium focus:border-portuguese-gold"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="password" className="text-sm font-medium text-portuguese-blue mb-2 block">
+                    Senha do Funcionário
+                  </label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="Digite a senha"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="border-azulejo-medium focus:border-portuguese-gold"
+                    onKeyDown={(e) => e.key === 'Enter' && handleTableNumberChange()}
+                  />
+                </div>
+                <div className="flex justify-end space-x-2 pt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsTableDialogOpen(false);
+                      setPassword('');
+                    }}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    variant="restaurant"
+                    onClick={handleTableNumberChange}
+                    disabled={!password.trim()}
+                  >
+                    Confirmar
+                  </Button>
+                </div>
+              </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </div>
   );
 }
