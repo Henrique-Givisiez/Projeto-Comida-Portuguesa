@@ -36,19 +36,34 @@ export default function Home() {
   };
 
 
-  const handleTableNumberChange = () => {
-    if (password !== '123') {
-      toast.error('Senha incorreta. Tente novamente.');
-      setPassword('');
-      return;
-    }
+  const verificarSenhaGarcom = api.variavel.verificar.useQuery(
+    { chave: "senhaGarcom", valor: password },
+    { enabled: false }
+  );
 
-    setTableNumber(tempTableNumber);
-    toast.success(`Mesa alterada para ${tempTableNumber}`);
-    
-    setIsTableDialogOpen(false);
-    setPassword('');
+  const handleTableNumberChange = async () => {
+    if (!password.trim()) return;
+
+    try {
+      const { data: senhaValida } = await verificarSenhaGarcom.refetch();
+
+      if (!senhaValida) {
+        toast.error("Senha incorreta. Tente novamente.");
+        setPassword("");
+        return;
+      }
+
+      setTableNumber(tempTableNumber);
+      toast.success(`Mesa alterada para ${tempTableNumber}`);
+      setIsTableDialogOpen(false);
+      setPassword("");
+
+    } catch (error) {
+      toast.error("Erro ao verificar a senha. Tente novamente.");
+      setPassword("");
+    }
   };
+
 
   return (
     <div className="min-h-screen bg-linear-to-b from-[#f5e6da] to-[#fff5cc] flex flex-col items-center justify-center p-6">
@@ -141,7 +156,12 @@ export default function Home() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="border-azulejo-medium focus:border-portuguese-gold"
-                    onKeyDown={(e) => e.key === 'Enter' && handleTableNumberChange()}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleTableNumberChange();
+                      }
+                    }}
                   />
                 </div>
                 <div className="flex justify-end space-x-2 pt-4">
