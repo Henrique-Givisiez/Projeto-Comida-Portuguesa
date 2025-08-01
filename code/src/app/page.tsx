@@ -7,6 +7,7 @@ import Button from "./_components/button";
 import React, { useState } from 'react';
 import { api } from '~/utils/api';
 import { toast } from 'sonner';
+import Image from 'next/image';
 
 export default function Home() {
   const createComanda = api.comanda.create.useMutation();
@@ -15,6 +16,7 @@ export default function Home() {
   const [tempTableNumber, setTempTableNumber] = useState('1');
   const [password, setPassword] = useState('');
   const [isTableDialogOpen, setIsTableDialogOpen] = useState(false);
+  const router = useRouter();
 
   const handleOpenComanda = async () => {
     if (!customerName.trim()) {
@@ -28,10 +30,12 @@ export default function Home() {
         numeroMesa: Number(tableNumber),
       });
 
-      useRouter().push(`/cardapio/${comanda.id}`)
+      router.push(`/cardapio/${comanda.id}`)
 
-    } catch (error: any) {
-      toast.error(error?.message || 'Erro ao abrir comanda');
+    } catch (error: unknown) {
+      const errMsg =
+        error instanceof Error ? error.message : "Erro ao abrir comanda";
+      toast.error(errMsg);
     }
   };
 
@@ -57,8 +61,8 @@ export default function Home() {
       toast.success(`Mesa alterada para ${tempTableNumber}`);
       setIsTableDialogOpen(false);
       setPassword("");
-
-    } catch (error) {
+    
+    } catch {
       toast.error("Erro ao verificar a senha. Tente novamente.");
       setPassword("");
     }
@@ -70,9 +74,11 @@ export default function Home() {
       <div className="relative z-10 w-full max-w-md">
         {/* Logo */}
         <div className="relative">
-          <img 
-            src="/Logo.png" 
-            alt="Comida Portuguesa Com Certeza" 
+          <Image
+            src="/Logo.png"
+            alt="Comida Portuguesa Com Certeza"
+            width={240} // ajuste conforme necessário
+            height={240}
             className="absolute top-[-15rem] left-1/2 -translate-x-1/2 h-60 w-auto object-contain z-20"
           />
         </div>
@@ -159,7 +165,7 @@ export default function Home() {
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
-                        handleTableNumberChange();
+                        void handleTableNumberChange();
                       }
                     }}
                   />
