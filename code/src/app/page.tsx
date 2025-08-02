@@ -1,11 +1,13 @@
 'use client'
-import React, { useState } from 'react';
-import Button from "./_components/button";
-import { Input } from './_components/input';
-import { Settings, UtensilsCrossed } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './_components/dialog';
-import { toast } from 'sonner';
+import { Settings, UtensilsCrossed } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Input } from './_components/input';
+import Button from "./_components/button";
+import React, { useState } from 'react';
 import { api } from '~/utils/api';
+import { toast } from 'sonner';
+import Image from 'next/image';
 
 export default function Home() {
   const createComanda = api.comanda.create.useMutation();
@@ -14,6 +16,7 @@ export default function Home() {
   const [tempTableNumber, setTempTableNumber] = useState('1');
   const [password, setPassword] = useState('');
   const [isTableDialogOpen, setIsTableDialogOpen] = useState(false);
+  const router = useRouter();
 
   const handleOpenComanda = async () => {
     if (!customerName.trim()) {
@@ -27,37 +30,55 @@ export default function Home() {
         numeroMesa: Number(tableNumber),
       });
 
-      toast.success(`Comanda aberta para ${comanda.nomeCliente} na mesa ${comanda.numeroMesa}`);
-      // Aqui você pode redirecionar para a página do cardápio
-      // Ex: router.push(`/cardapio/${comanda.id}`)
-    } catch (error: any) {
-      toast.error(error?.message || 'Erro ao abrir comanda');
+      router.push(`/cardapio/${comanda.id}`)
+
+    } catch (error: unknown) {
+      const errMsg =
+        error instanceof Error ? error.message : "Erro ao abrir comanda";
+      toast.error(errMsg);
     }
   };
 
 
-  const handleTableNumberChange = () => {
-    if (password !== '123') {
-      toast.error('Senha incorreta. Tente novamente.');
-      setPassword('');
-      return;
-    }
+  const verificarSenhaGarcom = api.variavel.verificar.useQuery(
+    { chave: "senhaGarcom", valor: password },
+    { enabled: false }
+  );
 
-    setTableNumber(tempTableNumber);
-    toast.success(`Mesa alterada para ${tempTableNumber}`);
+  const handleTableNumberChange = async () => {
+    if (!password.trim()) return;
+
+    try {
+      const { data: senhaValida } = await verificarSenhaGarcom.refetch();
+
+      if (!senhaValida) {
+        toast.error("Senha incorreta. Tente novamente.");
+        setPassword("");
+        return;
+      }
+
+      setTableNumber(tempTableNumber);
+      toast.success(`Mesa alterada para ${tempTableNumber}`);
+      setIsTableDialogOpen(false);
+      setPassword("");
     
-    setIsTableDialogOpen(false);
-    setPassword('');
+    } catch {
+      toast.error("Erro ao verificar a senha. Tente novamente.");
+      setPassword("");
+    }
   };
+
 
   return (
     <div className="min-h-screen bg-linear-to-b from-[#f5e6da] to-[#fff5cc] flex flex-col items-center justify-center p-6">
       <div className="relative z-10 w-full max-w-md">
         {/* Logo */}
         <div className="relative">
-          <img 
-            src="/Logo.png" 
-            alt="Comida Portuguesa Com Certeza" 
+          <Image
+            src="/Logo.png"
+            alt="Comida Portuguesa Com Certeza"
+            width={240} // ajuste conforme necessário
+            height={240}
             className="absolute top-[-15rem] left-1/2 -translate-x-1/2 h-60 w-auto object-contain z-20"
           />
         </div>
@@ -141,7 +162,12 @@ export default function Home() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="border-azulejo-medium focus:border-portuguese-gold"
-                    onKeyDown={(e) => e.key === 'Enter' && handleTableNumberChange()}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        void handleTableNumberChange();
+                      }
+                    }}
                   />
                 </div>
                 <div className="flex justify-end space-x-2 pt-4">

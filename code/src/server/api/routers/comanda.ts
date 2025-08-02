@@ -73,11 +73,13 @@ export const comandaRouter = createTRPCRouter({
       .query(async ({ input }) => {
         const { nomeCliente, numeroMesa } = input;
 
-        const where: any = {};
+        const where: Prisma.ComandaWhereInput = {
+          finalizada: false,
+        };
         if (nomeCliente) {
           where.nomeCliente = nomeCliente;
         }
-        if (numeroMesa) {
+        if (numeroMesa != undefined) {
           where.numeroMesa = numeroMesa;
         }
 

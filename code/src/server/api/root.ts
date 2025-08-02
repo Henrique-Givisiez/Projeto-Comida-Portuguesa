@@ -1,4 +1,5 @@
-import { comandaRouter } from "~/server/api/routers/comanda";
+import { comandaRouter } from "./routers/comanda";
+import { variavelRouter } from "./routers/variavel";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 /**
@@ -8,6 +9,7 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
  */
 export const appRouter = createTRPCRouter({
   comanda: comandaRouter,
+  variavel: variavelRouter,
 });
 
 // export type definition of API
