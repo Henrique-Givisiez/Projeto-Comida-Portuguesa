@@ -77,7 +77,10 @@ export const variavelRouter = createTRPCRouter({
 
       const updateData: Prisma.VariavelUpdateInput = {};
       if (input.chave != null) updateData.chave = input.chave;
-      if (input.valor != null) updateData.valor = input.valor;
+      if (input.valor != null) {
+        const hashed = await hash(input.valor, 10);
+        updateData.valor = hashed;
+      }
 
       return db.variavel.update({
         where: { id: input.id },
