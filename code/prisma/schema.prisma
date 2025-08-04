@@ -45,7 +45,7 @@ model Item {
   descricao   String
   preco       Float
   imageURL    String
-  categoria   String
+  categoria   Categoria
   disponivel  Boolean
 
   pedidoItens PedidoItem[]
@@ -56,6 +56,15 @@ enum Status {
   ENTREGUE
   FINALIZADO
   CANCELADO
+}
+
+enum Categoria {
+  ENTRADAS
+  PRATOS_CASA
+  PEIXES
+  CARNES
+  BEBIDAS
+  SOBREMESAS
 }
 
 model Variavel {
