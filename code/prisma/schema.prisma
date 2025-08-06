@@ -14,12 +14,13 @@ model Comanda {
   numeroMesa   Int
   finalizada   Boolean @default(false)
   pedidos      Pedido[]
+  chamados     Chamado[]
 }
 
 model Pedido {
   id                 String      @id @default(uuid())
   comandaId          String
-  status             Status
+  status             StatusPedido
   dataCriacao        DateTime    @default(now())
   ultimaAtualizacao  DateTime    @updatedAt
 
@@ -51,7 +52,23 @@ model Item {
   pedidoItens PedidoItem[]
 }
 
-enum Status {
+
+model Variavel {
+  id          String   @id @default(uuid())
+  chave       String   @unique
+  valor       String
+}
+
+model Chamado {
+  id                 String      @id @default(uuid())
+  comandaId          String
+  finalizado         Boolean     @default(false)
+  dataChamado        DateTime    @default(now())
+
+  comanda            Comanda     @relation(fields: [comandaId], references: [id])
+}
+
+enum StatusPedido {
   EM_ANDAMENTO
   ENTREGUE
   FINALIZADO
@@ -65,10 +82,4 @@ enum Categoria {
   CARNES
   BEBIDAS
   SOBREMESAS
-}
-
-model Variavel {
-  id          String   @id @default(uuid())
-  chave       String   @unique
-  valor       String
 }
