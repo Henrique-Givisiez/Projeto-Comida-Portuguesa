@@ -46,7 +46,7 @@ model Item {
   preco       Float
   imageURL    String
   categoria   Categoria
-  disponivel  Boolean
+  disponivel  Boolean @default(true)
 
   pedidoItens PedidoItem[]
 }
