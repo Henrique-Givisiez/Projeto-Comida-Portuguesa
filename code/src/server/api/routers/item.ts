@@ -31,7 +31,7 @@ const updateItemInput = z.object({
   disponivel: z.boolean().optional(),
 });
 
-export const comandaRouter = createTRPCRouter({
+export const itemRouter = createTRPCRouter({
   create: publicProcedure
     .input(createItemInput)
     .mutation(async ({ input }) => {
