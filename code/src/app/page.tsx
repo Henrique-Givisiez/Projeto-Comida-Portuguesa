@@ -115,10 +115,10 @@ export default function Home() {
               disabled={!customerName.trim()}
               variant="restaurant"
               size="lg"
-              className="w-full h-14 text-lg"
+              className="w-full h-14 text-lg font-semibold"
               aria-label="Abrir comanda"
               >
-              <UtensilsCrossed className="mx-1 w-5 h-5" />
+              <UtensilsCrossed className="mr-2 w-5 h-5" />
               Abrir Comanda
             </Button>
           </div>
@@ -186,6 +186,7 @@ export default function Home() {
                     variant="restaurant"
                     onClick={handleTableNumberChange}
                     disabled={!password.trim()}
+                    className='font-semibold'
                   >
                     Confirmar
                   </Button>
