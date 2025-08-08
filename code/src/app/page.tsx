@@ -77,9 +77,11 @@ export default function Home() {
           <Image
             src="/Logo.png"
             alt="Comida Portuguesa Com Certeza"
-            width={240} // ajuste conforme necessário
-            height={240}
-            className="absolute top-[-15rem] left-1/2 -translate-x-1/2 h-60 w-auto object-contain z-20"
+            width={480}
+            height={270}
+            className="absolute top-[-15rem] left-1/2 -translate-x-1/2"
+            priority
+            style={{ objectFit: 'contain' }}  
           />
         </div>
 
