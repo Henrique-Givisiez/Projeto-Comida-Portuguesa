@@ -2,14 +2,12 @@
 import React from "react";
 
 interface SidebarProps extends React.HTMLAttributes<HTMLElement> {
-  position?: "left" | "right";
   variant?: "light" | "dark" | "transparent";
   size?: "sm" | "md" | "lg";
   children: React.ReactNode;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
-  position = "left",
   variant = "light",
   size = "md",
   className = "",
@@ -32,9 +30,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     lg: "w-80",
   };
 
-  const border = position === "left" ? "border-r" : "border-l";
-
-  const classes = `${base} ${variants[variant]} ${sizes[size]} ${border} ${className}`;
+  const classes = `${base} ${variants[variant]} ${sizes[size]} ${className}`;
 
   return (
     <aside className={classes} style={style} {...props}>

@@ -35,16 +35,16 @@ export default function CategoriasSidebar() {
 
     return (
         <Sidebar
-            position="right"
             size="lg"
-            className="bg-gray-50 relative" // ✅ relative para posicionamento absoluto interno
-            style={{ backgroundColor: "rgba(255, 227, 212, 0.86)" }}
+            className="bg-gray-50 relative flex flex-col h-screen"
+            style={{ backgroundColor: "rgba(255, 227, 212)" }}
         >
-            {/* Conteúdo rolável */}
-            <div className="flex flex-col h-full overflow-y-auto"> 
-                <img src="Logo.png" alt="Logo" className="w-full" />
+              {/* Header fixo (logo) */}
+            <div className="sticky top-0 z-10 bg-[rgba(255,227,212)]">
+                <img src="Logo.png" alt="Logo Comida Portuguesa com Certeza" className="w-full" />
+            </div>
 
-                <nav className="flex flex-col gap-2 w-full">
+                <nav className="flex-1 min-h-0 overflow-y-auto px-0 py-2 flex flex-col gap-2">
                     <Button 
                       variant="restaurant"
                       size="md" 
@@ -100,10 +100,14 @@ export default function CategoriasSidebar() {
                         <IceCreamBowl className="mr-4" /> Sobremesas
                     </Button>
                 </nav>
-            </div>
 
             {/* Botão fixo no rodapé */}
-            <div className="absolute bottom-3 left-0 w-full p-5">
+            <div className="sticky bottom-0 left-0 w-full p-5 bg-[rgba(255,227,212,0.86)] relative
+          before:content-[''] before:pointer-events-none
+          before:absolute before:inset-x-0 before:-top-px before:h-4
+          before:bg-gradient-to-t
+          before:from-[rgba(255,227,212,0.86)]
+          before:to-transparent">
                 <Button
                   variant="restaurant"
                   size="md"
