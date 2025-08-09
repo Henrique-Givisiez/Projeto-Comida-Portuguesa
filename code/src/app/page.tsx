@@ -30,7 +30,7 @@ export default function Home() {
         numeroMesa: Number(tableNumber),
       });
 
-      router.push(`/cardapio/${comanda.id}`)
+      router.push(`/cardapio`)
 
     } catch (error: unknown) {
       const errMsg =
