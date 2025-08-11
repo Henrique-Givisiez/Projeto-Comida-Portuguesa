@@ -1,9 +1,10 @@
 'use client'
 import { Beef, BottleWine, Fish, HandPlatter, House, IceCreamBowl, Soup } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ItemsList } from "./_components/itemList";
 import Sidebar from "./_components/sidebar";
 import Button from "../_components/button";
 import { api } from '~/utils/api';
-import { useState, useEffect } from "react";
 
 type Categoria =
   | "ENTRADAS"
@@ -34,11 +35,12 @@ export default function CategoriasSidebar() {
     };
 
     return (
+      <div className="flex bg-[#F5F5F5]">
         <Sidebar
             size="lg"
             className="bg-gray-50 relative flex flex-col h-screen"
             style={{ backgroundColor: "rgba(255, 227, 212)" }}
-        >
+            >
               {/* Header fixo (logo) */}
             <div className="sticky top-0 z-10 bg-[rgba(255,227,212)]">
                 <img src="Logo.png" alt="Logo Comida Portuguesa com Certeza" className="w-full" />
@@ -117,6 +119,7 @@ export default function CategoriasSidebar() {
                 </Button>
             </div>
         </Sidebar>
-        
+          <ItemsList categoria={categoriaSelecionada}/>
+      </div>
     );
 }
