@@ -1,4 +1,4 @@
-// components/Sidebar.tsx
+//src/app/cardapio/_components/Sidebar.tsx
 import React from "react";
 
 interface SidebarProps extends React.HTMLAttributes<HTMLElement> {
