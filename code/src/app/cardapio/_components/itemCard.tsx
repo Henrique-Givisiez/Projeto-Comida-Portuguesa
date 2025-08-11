@@ -47,7 +47,7 @@ export default function ItemCard({ item, onAdd, className }: ItemCardProps) {
       <div className="flex min-w-0 flex-1 flex-col gap-2 p-3">
         <h3
           id={`item-${item.id}-title`}
-          className="text-xl font-serif font-semibold text-zinc-900"
+          className="text-2xl font-serif text-zinc-900"
         >
           {item.nome}
         </h3>

@@ -120,6 +120,14 @@ export default function CategoriasSidebar() {
             </div>
         </Sidebar>
           <ItemsList categoria={categoriaSelecionada}/>
+        {/* <Sidebar
+            size="lg"
+            className="bg-gray-50 relative flex flex-col h-screen"
+            style={{ backgroundColor: "rgba(255, 227, 212)" }}
+            >
+            <div>
+            </div>
+        </Sidebar> */}
       </div>
     );
 }
