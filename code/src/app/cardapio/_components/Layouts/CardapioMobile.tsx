@@ -32,7 +32,7 @@ export default function CardapioMobile() {
                 return (
                   <button
                     key={key}
-                    onClick={() => ctrl.handleFilterCategory(key as any)}
+                    onClick={() => ctrl.handleFilterCategory(key)}
                     className={[
                       "snap-start inline-flex items-center gap-2 whitespace-nowrap rounded-full border px-3 py-2 text-sm",
                       active

@@ -17,7 +17,7 @@ type Categoria =
 
 export function useCardapioController(defaultCategoria: Categoria = "ENTRADAS") {
         // Categoria inicial padrão
-    const [categoriaSelecionada, setCategoriaSelecionada] = useState<Categoria>("ENTRADAS");
+    const [categoriaSelecionada, setCategoriaSelecionada] = useState<Categoria>(defaultCategoria);
     const [carrinho, setCarrinho] = useState<CartEntry[]>([]);
 
     const router = useRouter();

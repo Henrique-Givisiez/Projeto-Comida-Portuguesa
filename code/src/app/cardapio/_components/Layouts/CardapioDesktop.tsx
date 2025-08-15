@@ -5,7 +5,8 @@ import Button from "../../../_components/button";
 import { ItemsList } from "../itemList";
 import { CartItem } from "../cartItem";
 import Sidebar from "../sidebar";
-  
+import Image from "next/image";
+
 export default function CardapioDesktop() {
     return (
       <CardapioHeadless>
@@ -18,7 +19,7 @@ export default function CardapioDesktop() {
                     >
                       {/* Header fixo (logo) */}
                     <div className="sticky top-0 z-10 bg-[rgba(255,227,212)]">
-                        <img src="Logo.png" alt="Logo Comida Portuguesa com Certeza" className="w-full" />
+                        <Image src="/Logo.png" alt="Logo Comida Portuguesa com Certeza" width={300} height={60} className="h-auto w-full" />
                     </div>
         
                         <nav className="flex-1 min-h-0 overflow-y-auto px-0 py-2 flex flex-col gap-2">
