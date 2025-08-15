@@ -13,35 +13,45 @@ type ItemsListProps = {
 };
 
 export function ItemsList({ categoria, onAddItem }: ItemsListProps) {
-  // busca os itens da categoria selecionada
-  const { data, isLoading, isError } = api.item.getByCategoria.useQuery(categoria);
+  const { data, isLoading, isFetching, isError } =
+    api.item.getByCategoria.useQuery(categoria, {
+      // mantém dados anteriores enquanto busca os novos (troca de categoria suave)
+      placeholderData: (prev) => prev, // v4
+      // em v5 use: placeholderData: keepPreviousData
+    });
 
   const items = useMemo(() => data ?? [], [data]);
 
-  if (isLoading) {
+  // 1) Skeleton no primeiro load OU durante refetch (quando ainda não há data)
+  if (isLoading || (isFetching && !data)) {
     return (
-      <div className="space-y-3">
+      <div className="space-y-3 p-5">
         {Array.from({ length: 3 }).map((_, i) => (
-          <div
-            key={i}
-            className="h-44 w-full animate-pulse rounded-xl bg-zinc-100"
-          />
+          <div key={i} className="h-44 w-full animate-pulse rounded-xl bg-zinc-100" />
         ))}
       </div>
     );
   }
 
-  if (isError || items.length === 0) {
+  // 2) Erro "real"
+  if (isError) {
     return (
-      <div
-        role="status"
-        className="rounded-lg border border-dashed border-zinc-300 p-6 text-center text-zinc-600"
-      >
+      <div role="status" className="rounded-lg border border-dashed border-zinc-300 p-6 text-center text-zinc-600">
+        Ocorreu um erro ao carregar os itens.
+      </div>
+    );
+  }
+
+  // 3) Lista vazia (não tratar como erro)
+  if (items.length === 0) {
+    return (
+      <div role="status" className="rounded-lg border border-dashed border-zinc-300 p-6 text-center text-zinc-600">
         Nenhum item encontrado para esta categoria.
       </div>
     );
   }
 
+  // 4) Conteúdo
   return (
     <section aria-label="Itens do cardápio" className="space-y-4 p-5">
       {items.map((item) => (
