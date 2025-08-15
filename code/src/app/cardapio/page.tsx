@@ -1,8 +1,9 @@
 'use client'
-import { Beef, BottleWine, Fish, HandPlatter, House, IceCreamBowl, Soup, ShoppingCart } from "lucide-react";
+import { Beef, BottleWine, Fish, HandPlatter, House, IceCreamBowl, Soup, ShoppingCart, CircleCheck } from "lucide-react";
 import { ItemsList } from "./_components/itemList";
 import { type ItemDTO } from "./_components/itemCard";
 import { CartItem , type CartEntry } from "./_components/cartItem";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Sidebar from "./_components/sidebar";
 import Button from "../_components/button";
@@ -21,6 +22,8 @@ export default function Cardapio() {
     const [categoriaSelecionada, setCategoriaSelecionada] = useState<Categoria>("ENTRADAS");
     const [carrinho, setCarrinho] = useState<CartEntry[]>([]);
 
+    const router = useRouter();
+    
     // Query do tRPC já executa com a categoria selecionada
     const { data: itens } = api.item.getByCategoria.useQuery(categoriaSelecionada);
 
@@ -199,15 +202,17 @@ export default function Cardapio() {
 
             {/* Total */}
             <div className="sticky bottom-0 left-0 right-0 border-t py-4 space-y-3 bg-white">
-              <p className="text-lg font-semibold">
-                Total: <span className="tabular-nums">R$ {total.toFixed(2)}</span>
-              </p>
+              <div className="flex items-center justify-between text-lg font-semibold">
+                <span>Total:</span>
+                <span className="tabular-nums text-[#0600B2]">R$ {total.toFixed(2)}</span>
+              </div>
               <Button
-                variant="restaurant"
-                size="md"
-                className="w-full h-12 text-md"
-                // onClick={() => ... navegar para checkout / enviar pedido }
+                variant="checkout"
+                size="xl"
+                className="w-full h-12 text-md font-bold"
+                onClick={() => router.push('/checkout') }
               >
+                <CircleCheck className="mr-4 w-8 h-8" />
                 Finalizar Pedido
               </Button>
             </div>

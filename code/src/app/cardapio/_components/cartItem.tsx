@@ -67,7 +67,7 @@ export function CartItem({ entry, onIncrease, onDecrease, onRemove }: CartItemPr
 
         {/* Preço (subtotal) */}
         <div className="text-right">
-          <span className="text-[17px] font-semibold text-blue-700">
+          <span className="text-[17px] font-semibold text-[#0600B2]">
             R$ {subtotal.toFixed(2)}
           </span>
         </div>
