@@ -14,7 +14,6 @@ export type ItemDTO = {
 type ItemCardProps = {
   item: ItemDTO;
   onAdd?: (item: ItemDTO) => void;
-  className?: string;
 };
 
 function formatPriceBRL(value: number) {
@@ -25,10 +24,11 @@ function formatPriceBRL(value: number) {
   }).format(value);
 }
 
-export default function ItemCard({ item, onAdd, className }: ItemCardProps) {
+
+export default function ItemCard({ item, onAdd }: ItemCardProps) {
   return (
     <article
-      className={`flex w-full items-stretch gap-4 rounded-xl bg-white shadow-sm ring-1 ring-zinc-200/70 ${className ?? ""}`}
+      className={`flex w-full items-stretch gap-4 rounded-xl bg-white shadow-sm ring-1 ring-zinc-200/70`}
       aria-labelledby={`item-${item.id}-title`}
     >
       {/* Imagem */}

@@ -1,7 +1,9 @@
 'use client'
-import { Beef, BottleWine, Fish, HandPlatter, House, IceCreamBowl, Soup } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Beef, BottleWine, Fish, HandPlatter, House, IceCreamBowl, Soup, ShoppingCart } from "lucide-react";
 import { ItemsList } from "./_components/itemList";
+import { type ItemDTO } from "./_components/itemCard";
+import { CartItem , type CartEntry } from "./_components/cartItem";
+import { useState, useEffect } from "react";
 import Sidebar from "./_components/sidebar";
 import Button from "../_components/button";
 import { api } from '~/utils/api';
@@ -14,12 +16,13 @@ type Categoria =
   | "BEBIDAS"
   | "SOBREMESAS";
 
-export default function CategoriasSidebar() {
+export default function Cardapio() {
     // Categoria inicial padrão
     const [categoriaSelecionada, setCategoriaSelecionada] = useState<Categoria>("ENTRADAS");
+    const [carrinho, setCarrinho] = useState<CartEntry[]>([]);
 
     // Query do tRPC já executa com a categoria selecionada
-    const { data: itens, isFetching, isError } = api.item.getByCategoria.useQuery(categoriaSelecionada);
+    const { data: itens } = api.item.getByCategoria.useQuery(categoriaSelecionada);
 
     // Sempre que os itens mudarem, mostramos no console
     useEffect(() => {
@@ -33,6 +36,49 @@ export default function CategoriasSidebar() {
     const handleFilterCategory = (categoria: Categoria) => {
         setCategoriaSelecionada(categoria);
     };
+
+    const handleAddToCart = (item: ItemDTO) => {
+      setCarrinho((prev) => {
+        const idx = prev.findIndex((e) => e.id === item.id);
+        // 1) Se já existe no carrinho: atualiza a quantidade (usando o array retornado pelo map)
+        if (idx !== -1) {
+          return prev.map((e, i) =>
+            i === idx ? { ...e, quantidade: e.quantidade + 1 } : e
+          );
+        }
+
+        // 2) Se é novo: monta um CartEntry e adiciona
+        const entry: CartEntry = {
+          id: item.id,
+          nome: item.nome,
+          preco: item.preco,
+          quantidade: 1,
+        };
+
+        return [...prev, entry];
+      })
+    };
+
+    // Aumentar/diminuir/remover
+    const increaseQty = (id: string) => {
+      setCarrinho((prev) =>
+        prev.map((e) => (e.id === id ? { ...e, quantidade: e.quantidade + 1 } : e))
+      );
+    };
+
+    const decreaseQty = (id: string) => {
+      setCarrinho((prev) =>
+        prev
+          .map((e) => (e.id === id ? { ...e, quantidade: e.quantidade - 1 } : e))
+          .filter((e) => e.quantidade > 0) // remove se chegar a 0
+      );
+    };
+
+    const removeItem = (id: string) => {
+      setCarrinho((prev) => prev.filter((e) => e.id !== id));
+    };
+
+    const total = carrinho.reduce((acc, e) => acc + e.preco * e.quantidade, 0);
 
     return (
       <div className="flex bg-[#F5F5F5]">
@@ -119,7 +165,54 @@ export default function CategoriasSidebar() {
                 </Button>
             </div>
         </Sidebar>
-          <ItemsList categoria={categoriaSelecionada}/>
+          <ItemsList categoria={categoriaSelecionada} onAddItem={handleAddToCart}/>
+        {/* Sidebar do carrinho */}
+        {carrinho.length > 0 && (
+          <Sidebar size="lg" className="px-5 flex flex-col">
+            {/* Header (fixo, fora da área rolável) */}
+            <div
+              className="bg-white sticky top-0 z-10 flex items-center justify-center h-12 sm:h-16 md:h-20 border-b"
+              style={{ borderColor: "rgba(0,0,0,0.17)" }}
+            >
+              <ShoppingCart className="mr-4 w-8 h-8" />
+              <h1 className="text-3xl font-serif">Meu Pedido</h1>
+            </div>
+
+            {/* Lista rolável */}
+            <div className="relative flex-1 min-h-0 overflow-y-auto py-3 space-y-4">
+              {/* Fader no topo para sumir suavemente ao passar sob o header */}
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-6 bg-gradient-to-b from-white to-transparent" />
+
+              {/* Fader no rodapé da lista para suavizar antes do total */}
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-white to-transparent" />
+
+                {carrinho.map((entry) => (
+                  <CartItem
+                    key={entry.id}
+                    entry={entry}
+                    onIncrease={() => increaseQty(entry.id)}
+                    onDecrease={() => decreaseQty(entry.id)}
+                    onRemove={() => removeItem(entry.id)}
+                  />
+                ))}
+            </div>
+
+            {/* Total */}
+            <div className="sticky bottom-0 left-0 right-0 border-t py-4 space-y-3 bg-white">
+              <p className="text-lg font-semibold">
+                Total: <span className="tabular-nums">R$ {total.toFixed(2)}</span>
+              </p>
+              <Button
+                variant="restaurant"
+                size="md"
+                className="w-full h-12 text-md"
+                // onClick={() => ... navegar para checkout / enviar pedido }
+              >
+                Finalizar Pedido
+              </Button>
+            </div>
+          </Sidebar>
+        )}
       </div>
     );
 }

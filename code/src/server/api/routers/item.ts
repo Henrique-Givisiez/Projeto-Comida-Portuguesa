@@ -56,10 +56,6 @@ export const itemRouter = createTRPCRouter({
       where: { categoria: input },
     });
 
-    if (items.length === 0) {
-      throw new Error("Nenhum item encontrado.");
-    }
-
     return items;
   }),
 
