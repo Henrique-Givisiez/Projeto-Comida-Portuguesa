@@ -25,7 +25,7 @@ export default function Home() {
     }
 
     try {
-      const comanda = await createComanda.mutateAsync({
+      await createComanda.mutateAsync({
         nomeCliente: customerName.trim(),
         numeroMesa: Number(tableNumber),
       });
