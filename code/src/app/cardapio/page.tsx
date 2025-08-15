@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import Sidebar from "./_components/sidebar";
 import Button from "../_components/button";
 import { api } from '~/utils/api';
+import { toast } from "sonner";
 
 type Categoria =
   | "ENTRADAS"
@@ -36,6 +37,9 @@ export default function Cardapio() {
         }
     }, [itens, categoriaSelecionada]);
 
+    const handleCallGarcom = () => {
+      toast.success("Garçom chamado com sucesso!");
+    }
     const handleFilterCategory = (categoria: Categoria) => {
         setCategoriaSelecionada(categoria);
     };
@@ -163,6 +167,7 @@ export default function Cardapio() {
                   variant="restaurant"
                   size="md"
                   className="flex justify-start w-full h-14 text-md"
+                  onClick={handleCallGarcom}
                 >
                   <HandPlatter className="mr-4" /> Chamar Garçom
                 </Button>
