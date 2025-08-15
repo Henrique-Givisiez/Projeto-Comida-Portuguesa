@@ -25,12 +25,12 @@ export default function Home() {
     }
 
     try {
-      await createComanda.mutateAsync({
+      const comanda = await createComanda.mutateAsync({
         nomeCliente: customerName.trim(),
         numeroMesa: Number(tableNumber),
       });
 
-      router.push(`/cardapio`)
+      router.push(`/cardapio/${comanda.id}`)
 
     } catch (error: unknown) {
       const errMsg =
