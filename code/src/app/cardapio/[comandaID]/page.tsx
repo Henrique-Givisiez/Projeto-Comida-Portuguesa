@@ -8,9 +8,8 @@ export default function Cardapio() {
     const params = useParams<{ comandaID: string }>();
 
     const comandaId = params.comandaID;
-    console.log(comandaId);
 
-    const isMobile =     useMediaQuery({ maxWidth: 768 });
+    const isMobile = useMediaQuery({ maxWidth: 768 });
 
     return isMobile ? <CardapioMobile /> : <CardapioDesktop />;
 }

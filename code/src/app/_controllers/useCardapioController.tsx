@@ -1,11 +1,11 @@
-//src/app/_controllers/useCardapioController.tsx
-'use client'
-import { type CartEntry } from "../cardapio/_components/cartItem";
+// src/app/_controllers/useCardapioController.tsx
+"use client";
 import { type ItemDTO } from "../cardapio/_components/itemCard";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, useMemo } from "react";
-import { api } from '~/utils/api';
+import { api } from "~/utils/api";
 import { toast } from "sonner";
+import { useCartController } from "./useCartController";
 
 type Categoria =
   | "ENTRADAS"
@@ -16,94 +16,58 @@ type Categoria =
   | "SOBREMESAS";
 
 export function useCardapioController(defaultCategoria: Categoria = "ENTRADAS") {
-        // Categoria inicial padrão
-    const [categoriaSelecionada, setCategoriaSelecionada] = useState<Categoria>(defaultCategoria);
-    const [carrinho, setCarrinho] = useState<CartEntry[]>([]);
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState<Categoria>(defaultCategoria);
 
-    const router = useRouter();
-    
-    // Query do tRPC já executa com a categoria selecionada
-    const { data: itens } = api.item.getByCategoria.useQuery(categoriaSelecionada);
+  const entries = useCartController((s) => s.entries);
+  const addItem = useCartController((s) => s.addItem);
+  const increase = useCartController((s) => s.increase);
+  const decrease = useCartController((s) => s.decrease);
+  const remove = useCartController((s) => s.remove);
 
-    // Sempre que os itens mudarem, mostramos no console
-    useEffect(() => {
-        if (itens) {
-        console.log(`Itens da categoria ${categoriaSelecionada}:`, itens);
-        } else {
-            console.log(categoriaSelecionada);
-        }
-    }, [itens, categoriaSelecionada]);
+  const router = useRouter();
 
-    const handleCallGarcom = () => {
-      toast.success("Garçom chamado com sucesso!");
+  const { data: itens } = api.item.getByCategoria.useQuery(categoriaSelecionada);
+
+  useEffect(() => {
+    if (itens) {
+      console.log(`Itens da categoria ${categoriaSelecionada}:`, itens);
+    } else {
+      console.log(categoriaSelecionada);
     }
-    const handleFilterCategory = (categoria: Categoria) => {
-        setCategoriaSelecionada(categoria);
-    };
+  }, [itens, categoriaSelecionada]);
 
-    const handleAddToCart = (item: ItemDTO) => {
-      setCarrinho((prev) => {
-        const idx = prev.findIndex((e) => e.id === item.id);
-        // 1) Se já existe no carrinho: atualiza a quantidade (usando o array retornado pelo map)
-        if (idx !== -1) {
-          return prev.map((e, i) =>
-            i === idx ? { ...e, quantidade: e.quantidade + 1 } : e
-          );
-        }
+  const handleCallGarcom = () => {
+    toast.success("Garçom chamado com sucesso!");
+  };
 
-        // 2) Se é novo: monta um CartEntry e adiciona
-        const entry: CartEntry = {
-          id: item.id,
-          nome: item.nome,
-          preco: item.preco,
-          quantidade: 1,
-        };
+  const handleFilterCategory = (categoria: Categoria) => {
+    setCategoriaSelecionada(categoria);
+  };
 
-        return [...prev, entry];
-      })
-    };
+  const handleAddToCart = (item: ItemDTO) => {
+    addItem({ id: item.id, nome: item.nome, preco: item.preco });
+  };
 
-    // Aumentar/diminuir/remover
-    const increaseQty = (id: string) => {
-      setCarrinho((prev) =>
-        prev.map((e) => (e.id === id ? { ...e, quantidade: e.quantidade + 1 } : e))
-      );
-    };
+  const total = useMemo(
+    () => entries.reduce((acc, e) => acc + e.preco * e.quantidade, 0),
+    [entries]
+  );
 
-    const decreaseQty = (id: string) => {
-      setCarrinho((prev) =>
-        prev
-          .map((e) => (e.id === id ? { ...e, quantidade: e.quantidade - 1 } : e))
-          .filter((e) => e.quantidade > 0) // remove se chegar a 0
-      );
-    };
-
-    const removeItem = (id: string) => {
-      setCarrinho((prev) => prev.filter((e) => e.id !== id));
-    };
-
-    const total = useMemo(
-        () => carrinho.reduce((acc, e) => acc + e.preco * e.quantidade, 0),
-        [carrinho]
-    );
-
-
-    return {
-        //estado
-        categoriaSelecionada,
-        itens: itens ?? [],
-        carrinho,
-        total,
-        //ações
-        setCategoriaSelecionada,
-        setCarrinho,
-        handleCallGarcom,
-        handleFilterCategory,
-        handleAddToCart,
-        increaseQty,
-        decreaseQty,
-        removeItem,
-        //navegacao
-        router,
-    }
+  return {
+    // estado
+    categoriaSelecionada,
+    itens: itens ?? [],
+    carrinho: entries,
+    total,
+    // ações
+    setCategoriaSelecionada,
+    handleCallGarcom,
+    handleFilterCategory,
+    handleAddToCart,
+    increaseQty: increase,
+    decreaseQty: decrease,
+    removeItem: remove,
+    // navegação
+    router,
+  };
 }

@@ -68,6 +68,16 @@ export const comandaRouter = createTRPCRouter({
       return comandas;
     }),
     
+    getByID: publicProcedure
+      .input(z.string())
+      .query(async ({ input }) => {
+        const comanda = await db.comanda.findUnique({
+          where: { id: input },
+        });
+        if (!comanda) throw new Error("Comanda não encontrada.");
+        return comanda;
+      }),
+ 
     getByParam: publicProcedure
       .input(getComanadaByParamInput)
       .query(async ({ input }) => {
