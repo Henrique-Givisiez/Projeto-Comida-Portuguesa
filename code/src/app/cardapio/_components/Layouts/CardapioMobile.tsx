@@ -7,6 +7,7 @@ import Button from "../../../_components/button";
 import { ItemsList } from "../itemList";
 import { CartItem } from "../cartItem";
 import { useState } from "react";
+import { useParams } from "next/navigation";
 
 const CATEGORIES = [
   { key: "ENTRADAS", label: "Entradas", icon: Soup },
@@ -19,6 +20,8 @@ const CATEGORIES = [
 
 export default function CardapioMobile() {
   const [cartOpen, setCartOpen] = useState(false);
+  const params = useParams<{ comandaID: string }>();
+  const comandaId = params.comandaID;
 
   return (
     <CardapioHeadless>
@@ -149,7 +152,7 @@ export default function CardapioMobile() {
                     className="w-full"
                     onClick={() => {
                       setCartOpen(false);
-                      ctrl.router.push("/checkout");
+                      ctrl.router.push(`/checkout/${comandaId}`);
                     }}
                   >
                     <CircleCheck className="mr-2 h-5 w-5" />
