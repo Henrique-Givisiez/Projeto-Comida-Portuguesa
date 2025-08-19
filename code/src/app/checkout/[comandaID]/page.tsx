@@ -35,7 +35,7 @@ export default function CheckoutPage() {
     onSuccess: () => {
       toast.success("Pedido enviado!");
       clear();
-      router.push("/cardapio");
+      router.push("/cardapio/" + comandaId);
     },
     onError: (err) => {
       console.error(err);
@@ -49,17 +49,14 @@ export default function CheckoutPage() {
       return;
     }
 
-    // Descomente quando sua rota estiver pronta
-    // createPedido.mutate({
-    //   comandaId: comandaId ?? undefined,
-    //   itens: entries.map((e) => ({
-    //     itemId: e.id,
-    //     quantidade: e.quantidade,
-    //     observacao: e.observacao ?? "",
-    //     subtotal: e.preco * e.quantidade,
-    //   })),
-    //   total,
-    // });
+    createPedido.mutate({
+      comandaId: comandaId,
+      itens: entries.map((e) => ({
+        itemId: e.id,
+        quantidade: e.quantidade,
+        observacao: e.observacao ?? "",
+      })),
+    });
   };
 
   const formatBRL = (v: number) =>
