@@ -6,8 +6,12 @@ import { ItemsList } from "../itemList";
 import { CartItem } from "../cartItem";
 import Sidebar from "../sidebar";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 
 export default function CardapioDesktop() {
+    const params = useParams<{ comandaID: string }>();
+    const comandaId = params.comandaID;
+  
     return (
       <CardapioHeadless>
         {(ctrl) => (
@@ -138,7 +142,7 @@ export default function CardapioDesktop() {
                         variant="checkout"
                         size="xl"
                         className="w-full h-12 text-md font-bold"
-                        onClick={() => ctrl.router.push('/checkout') }
+                        onClick={() => ctrl.router.push(`/checkout/${comandaId}`) }
                       >
                         <CircleCheck className="mr-4 w-8 h-8" />
                         Finalizar Pedido
