@@ -153,11 +153,6 @@ export const pedidoRouter = createTRPCRouter({
         });
 
         return pedido;
-      }).catch((err) => {
-        if (err?.code === "P2025") {
-          throw new TRPCError({ code: "NOT_FOUND", message: "Pedido não encontrado." });
-        }
-        throw err;
       });
 
       return deleted;
