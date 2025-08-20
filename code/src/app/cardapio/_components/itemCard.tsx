@@ -76,7 +76,7 @@ export default function ItemCard({ item, onAdd }: ItemCardProps) {
             type="button"
             onClick={() => onAdd?.(item)}
             className={`
-              ml-auto rounded-md bg-amber-500 px-4 py-2 text-sm font-semibold text-black
+              cursor-pointer ml-auto rounded-md bg-amber-500 px-4 py-2 text-sm font-semibold text-black
               transition hover:bg-amber-600 focus:outline-none
               focus-visible:ring-2 focus-visible:ring-amber-600/70 active:bg-amber-700
               md:ml-0
