@@ -70,33 +70,30 @@ export default function Home() {
 
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-[#f5e6da] to-[#fff5cc] flex flex-col items-center justify-center p-6">
-      <div className="relative z-10 w-full max-w-md">
-        {/* Logo */}
-        <div className="relative">
+    <div className="min-h-[100dvh] bg-gradient-to-b from-[#f5e6da] to-[#fff5cc]">
+      {/* Coluna rolável centralizada no eixo X */}
+      <div className="mx-auto max-w-md min-h-[100dvh] flex flex-col">
+        {/* Header sticky com a logo (sem absolute) */}
+        <header className="sticky top-0 z-10 bg-transparent backdrop-blur px-6 pt-6 pb-4">
           <Image
             src="/Logo.png"
             alt="Comida Portuguesa Com Certeza"
-            width={240} // ajuste conforme necessário
-            height={240}
-            className="absolute top-[-15rem] left-1/2 -translate-x-1/2 h-60 w-auto object-contain z-20"
+            width={480}
+            height={270}
+            className="mx-auto h-auto w-56 sm:w-72 md:w-80"
+            priority
           />
-        </div>
+        </header>
 
-        {/* Card Boas Vindas */}
-        <div className="bg-white rounded-xl shadow-[0_4px_14px_rgba(0,0,0,0.1)] p-8 mb-4">
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-[#002b5c] mb-2">
-              Bem-vindo!
-            </h1>
-            <p className="text-[#6c757d]">
-              Digite seu nome para começar seu pedido
-            </p>
-          </div>
+        {/* Main rolável (ocupa o restante) */}
+        <main className="flex-1 px-6 py-6">
+          <div className="bg-white rounded-xl shadow-[0_4px_14px_rgba(0,0,0,0.1)] p-8 mb-4">
+            <div className="text-center mb-8">
+              <h1 className="text-2xl font-bold text-[#002b5c] mb-2">Bem-vindo!</h1>
+              <p className="text-[#6c757d]">Digite seu nome para começar seu pedido</p>
+            </div>
 
-          {/* Nome Cliente Input */}
-          <div className="space-y-6">
-            <div>
+            <div className="space-y-6">
               <Input
                 type="text"
                 placeholder="Digite seu nome para abrir a comanda"
@@ -104,93 +101,92 @@ export default function Home() {
                 onChange={(e) => setCustomerName(e.target.value)}
                 className="h-14 text-lg border-2 border-[#729bbf] focus:border-[#f4c542] transition-colors"
                 aria-label="Nome do cliente"
-                />
-            </div>
-
-            {/* Abrir Comanda Button */}
-            <Button
-              onClick={handleOpenComanda}
-              disabled={!customerName.trim()}
-              variant="restaurant"
-              size="lg"
-              className="w-full h-14 text-lg"
-              aria-label="Abrir comanda"
+              />
+              <Button
+                onClick={handleOpenComanda}
+                disabled={!customerName.trim()}
+                variant="restaurant"
+                size="lg"
+                className="w-full h-14 text-lg font-semibold"
+                aria-label="Abrir comanda"
               >
-              <UtensilsCrossed className="mx-1 w-5 h-5" />
-              Abrir Comanda
-            </Button>
+                <UtensilsCrossed className="mr-2 w-5 h-5" />
+                Abrir Comanda
+              </Button>
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* Alterar mesa Modal */}
-      <div className="flex justify-center">
-        <Dialog open={isTableDialogOpen} onOpenChange={setIsTableDialogOpen}>
-          <DialogTrigger asChild>
-            <Button variant="settings" className="h-12 w-12">
-              <Settings className="w-5 h-5" />
-            </Button>
-          </DialogTrigger>
+          {/* Botão de configurações / alterar mesa */}
+          <div className="flex justify-center">
+            <Dialog open={isTableDialogOpen} onOpenChange={setIsTableDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="settings" className="h-12 w-12" aria-label="Configurações de mesa">
+                  <Settings className="w-5 h-5" />
+                </Button>
+              </DialogTrigger>
 
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Configurações da Mesa {tableNumber}</DialogTitle>
-            </DialogHeader>
-          <div className="space-y-4 pt-4">
-                <div>
-                  <label htmlFor="table-number" className="text-sm font-medium text-portuguese-blue mb-2 block">
-                    Número da Mesa
-                  </label>
-                  <Input
-                    id="table-number"
-                    type="number"
-                    min="1"
-                    max="50"
-                    value={tempTableNumber}
-                    onChange={(e) => setTempTableNumber(e.target.value)}
-                    className="border-azulejo-medium focus:border-portuguese-gold"
-                  />
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Configurações da Mesa {tableNumber}</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 pt-4">
+                  <div>
+                    <label htmlFor="table-number" className="text-sm font-medium text-portuguese-blue mb-2 block">
+                      Número da Mesa
+                    </label>
+                    <Input
+                      id="table-number"
+                      type="number"
+                      min="1"
+                      max="50"
+                      value={tempTableNumber}
+                      onChange={(e) => setTempTableNumber(e.target.value)}
+                      className="border-azulejo-medium focus:border-portuguese-gold"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="password" className="text-sm font-medium text-portuguese-blue mb-2 block">
+                      Senha do Funcionário
+                    </label>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="Digite a senha"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="border-azulejo-medium focus:border-portuguese-gold"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          void handleTableNumberChange();
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="flex justify-end space-x-2 pt-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setIsTableDialogOpen(false);
+                        setPassword('');
+                      }}
+                    >
+                      Cancelar
+                    </Button>
+                    <Button
+                      variant="restaurant"
+                      onClick={handleTableNumberChange}
+                      disabled={!password.trim()}
+                      className="font-semibold"
+                    >
+                      Confirmar
+                    </Button>
+                  </div>
                 </div>
-                <div>
-                  <label htmlFor="password" className="text-sm font-medium text-portuguese-blue mb-2 block">
-                    Senha do Funcionário
-                  </label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Digite a senha"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="border-azulejo-medium focus:border-portuguese-gold"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        void handleTableNumberChange();
-                      }
-                    }}
-                  />
-                </div>
-                <div className="flex justify-end space-x-2 pt-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setIsTableDialogOpen(false);
-                      setPassword('');
-                    }}
-                  >
-                    Cancelar
-                  </Button>
-                  <Button
-                    variant="restaurant"
-                    onClick={handleTableNumberChange}
-                    disabled={!password.trim()}
-                  >
-                    Confirmar
-                  </Button>
-                </div>
-              </div>
-          </DialogContent>
-        </Dialog>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </main>
       </div>
     </div>
   );
