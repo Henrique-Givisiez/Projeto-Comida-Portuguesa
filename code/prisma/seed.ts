@@ -1,16 +1,22 @@
 import { PrismaClient, Categoria } from '@prisma/client';
 const prisma = new PrismaClient();
+import { hash } from "bcryptjs";
 
 async function main() {
   // Limpa o banco (apenas em ambiente de desenvolvimento)
+  await prisma.variavel.deleteMany();
+  await prisma.pedidoItem.deleteMany();
   await prisma.item.deleteMany();
+  await prisma.pedido.deleteMany();
+  await prisma.comanda.deleteMany();
+  await prisma.chamado.deleteMany();
 
-
+  const senhaHash = await hash("garcom123", 10);
   // 1. Criar variaveis
   await prisma.variavel.create({
     data : {
         chave: "senhaGarcom",
-        valor: "garcom123"
+        valor: senhaHash
     }
   })
 
