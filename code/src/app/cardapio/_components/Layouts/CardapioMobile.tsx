@@ -52,7 +52,7 @@ export default function CardapioMobile() {
               })}
               <button
                 className="bg-white hover:bg-[#fff3e0] snap-start inline-flex items-center gap-2 whitespace-nowrap rounded-full border px-3 py-2 text-sm"
-                onClick={ctrl.handleCallGarcom}
+                onClick={() => ctrl.handleCallGarcom(comandaId)}
                 title="Chamar garçom"
               >
                 <HandPlatter className="mr-2 h-4 w-4" />

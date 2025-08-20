@@ -36,8 +36,21 @@ export function useCardapioController(defaultCategoria: Categoria = "ENTRADAS") 
     }
   }, [itens, categoriaSelecionada]);
 
-  const handleCallGarcom = () => {
-    toast.success("Garçom chamado com sucesso!");
+
+  const createChamado = api.chamado.create.useMutation({
+    onSuccess: () => {
+      toast.success("Garçom a caminho!");
+    },
+    onError: (err) => {
+      console.error(err);
+      toast.error("Falha ao chamar o garçom.");
+    },
+  });
+
+  const handleCallGarcom = ( comandaId: string) => {
+    createChamado.mutate({
+      comandaId: comandaId
+    });
   };
 
   const handleFilterCategory = (categoria: Categoria) => {

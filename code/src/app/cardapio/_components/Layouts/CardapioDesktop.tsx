@@ -94,7 +94,7 @@ export default function CardapioDesktop() {
                           variant="restaurant"
                           size="md"
                           className="flex justify-start w-full h-14 text-md"
-                          onClick={ctrl.handleCallGarcom}
+                          onClick={() => ctrl.handleCallGarcom(comandaId)}
                         >
                           <HandPlatter className="mr-4" /> Chamar Garçom
                         </Button>
