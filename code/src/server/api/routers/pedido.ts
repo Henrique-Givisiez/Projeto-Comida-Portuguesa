@@ -16,7 +16,7 @@ const createPedidoInput = z.object({
 
 const getByParamInput = z.object({
   numeroMesa: z.number().int().optional(),
-  status: z.enum(["EM_ANDAMENTO", "ENTREGUE", "CANCELADO", "FINALIZADO"]).optional(),
+  status: z.enum(["EM_ANDAMENTO", "ENTREGUE", "CANCELADO"]).optional(),
   dataCriacao: z.date().optional(),
 })
 
@@ -26,7 +26,7 @@ const getByIdInput = z.object({
 
 const updatePedidoInput = z.object({
   id: z.string().min(1),
-  status: z.enum(["EM_ANDAMENTO", "ENTREGUE", "CANCELADO", "FINALIZADO"]).optional(),
+  status: z.enum(["EM_ANDAMENTO", "ENTREGUE", "CANCELADO"]).optional(),
   comandaId: z.string().optional(),
 });
 
