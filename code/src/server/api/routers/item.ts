@@ -55,7 +55,9 @@ export const itemRouter = createTRPCRouter({
     const items = await db.item.findMany({
       where: { categoria: input },
     });
-
+    if (items.length === 0) {
+      throw new Error("Nenhum item encontrado.");
+    }
     return items;
   }),
 
@@ -75,7 +77,7 @@ export const itemRouter = createTRPCRouter({
   .query(async () => {
     const items = await db.item.findMany();
     if (items.length === 0) {
-      throw new Error("Nenhum item encontrado.");
+      throw new Error("Item não encontrado.");
     }
     return items;
   }),

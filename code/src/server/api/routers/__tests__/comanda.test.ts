@@ -4,6 +4,9 @@ import { db } from '~/server/db';
 import { Headers } from 'undici';
 
 beforeEach(async () => {
+  await db.pedidoItem.deleteMany();
+  await db.pedido.deleteMany();
+  await db.chamado.deleteMany();
   await db.comanda.deleteMany();
 });
 
