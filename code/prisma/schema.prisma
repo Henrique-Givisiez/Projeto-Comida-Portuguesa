@@ -72,7 +72,6 @@ model Chamado {
 enum StatusPedido {
   EM_ANDAMENTO
   ENTREGUE
-  FINALIZADO
   CANCELADO
 }
 
