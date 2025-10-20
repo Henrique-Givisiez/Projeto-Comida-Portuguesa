@@ -1,4 +1,4 @@
-import { PrismaClient, Categoria } from '@prisma/client';
+import { PrismaClient, Categoria, StatusPedido } from "@prisma/client";
 const prisma = new PrismaClient();
 import { hash } from "bcryptjs";
 
@@ -178,10 +178,99 @@ async function main() {
       } 
     ]
   });
+  
+ // Buscar IDs dos itens por nome para montar PedidoItem
+  const itens = await prisma.item.findMany();
+  const byName = new Map(itens.map((i) => [i.nome, i.id]));
+
+  // Helpers
+  type SeedItem = { nome: string; quantidade: number; observacao?: string };
+  const mapItens = (arr: SeedItem[]) =>
+    arr.map((s) => ({
+      itemId: byName.get(s.nome)!,
+      quantidade: s.quantidade,
+      observacao: s.observacao ?? null,
+    }));
+
+  // ---- Comandas ----
+  const [comanda5, comanda12] = await Promise.all([
+    prisma.comanda.create({
+      data: {
+        nomeCliente: "Mesa 5",
+        numeroMesa: 5,
+        dataCriacao: new Date(Date.now() - 2 * 60 * 60 * 1000), // ~2h atrás
+      },
+    }),
+    prisma.comanda.create({
+      data: {
+        nomeCliente: "Mesa 12",
+        numeroMesa: 12,
+        dataCriacao: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      },
+    }),
+  ]);
+
+  // ---- Pedidos (com nested create em PedidoItem) ----
+
+  // Mesa 5 - EM_ANDAMENTO
+  await prisma.pedido.create({
+    data: {
+      comandaId: comanda5.id,
+      status: StatusPedido.EM_ANDAMENTO,
+      dataCriacao: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      itens: {
+        create: mapItens([
+          { nome: "Bacalhau à Zé do Pipo", quantidade: 1, observacao: "Pouco sal" },
+          { nome: "Refrigerante Guaraná", quantidade: 1 },
+        ]),
+      },
+    },
+  });
+
+  // Mesa 12 - EM_ANDAMENTO
+  await prisma.pedido.create({
+    data: {
+      comandaId: comanda12.id,
+      status: StatusPedido.EM_ANDAMENTO,
+      dataCriacao: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      itens: {
+        create: mapItens([{ nome: "Sopa do Divino", quantidade: 2 }]),
+      },
+    },
+  });
+
+  // Mesa 5 - ENTREGUE
+  await prisma.pedido.create({
+    data: {
+      comandaId: comanda5.id,
+      status: StatusPedido.ENTREGUE,
+      dataCriacao: new Date(Date.now() - 60 * 60 * 1000),
+      itens: {
+        create: mapItens([
+          { nome: "Bolinho de Bacalhau", quantidade: 2 },
+          { nome: "Refrigerante Coca-Cola", quantidade: 1 },
+        ]),
+      },
+    },
+  });
+
+  // Mesa 12 - CANCELADO
+  await prisma.pedido.create({
+    data: {
+      comandaId: comanda12.id,
+      status: StatusPedido.CANCELADO,
+      dataCriacao: new Date(Date.now() - 30 * 60 * 1000),
+      itens: {
+        create: mapItens([{ nome: "Arroz de Marisco", quantidade: 1 }]),
+      },
+    },
+  });
+
+  console.log("✅ Seed concluída com Variavel, Itens, Comandas e Pedidos.");
 }
 
 main()
-  .catch(e => {
+  .catch((e) => {
     console.error(e);
     process.exit(1);
   })
