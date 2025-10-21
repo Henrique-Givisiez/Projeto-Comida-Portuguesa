@@ -19,14 +19,14 @@ model Comanda {
 }
 
 model Pedido {
-  id                 String      @id @default(uuid())
-  comandaId          String
-  status             StatusPedido
-  dataCriacao        DateTime    @default(now())
-  ultimaAtualizacao  DateTime    @updatedAt
+  id        String   @id @default(uuid())
+  comandaId String
+  status    StatusPedido
+  dataCriacao DateTime @default(now())
+  ultimaAtualizacao DateTime @updatedAt
 
-  comanda            Comanda     @relation(fields: [comandaId], references: [id])
-  itens              PedidoItem[]
+  comanda Comanda @relation(fields: [comandaId], references: [id], onDelete: Cascade)
+  itens   PedidoItem[]
 }
 
 model PedidoItem {
@@ -37,8 +37,8 @@ model PedidoItem {
   observacao  String?
   dataCriacao DateTime @default(now())
 
-  pedido      Pedido   @relation(fields: [pedidoId], references: [id])
-  item        Item     @relation(fields: [itemId], references: [id])
+  pedido Pedido @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+  item   Item   @relation(fields: [itemId], references: [id]) // RESTRICT (padrão) ou Cascade, conforme sua regra
 }
 
 model Item {
@@ -61,13 +61,14 @@ model Variavel {
 }
 
 model Chamado {
-  id                 String      @id @default(uuid())
-  comandaId          String
-  finalizado         Boolean     @default(false)
-  dataChamado        DateTime    @default(now())
+  id          String   @id @default(uuid())
+  comandaId   String
+  finalizado  Boolean  @default(false)
+  dataChamado DateTime @default(now())
 
-  comanda            Comanda     @relation(fields: [comandaId], references: [id])
+  comanda Comanda @relation(fields: [comandaId], references: [id], onDelete: Cascade)
 }
+
 
 enum StatusPedido {
   EM_ANDAMENTO
