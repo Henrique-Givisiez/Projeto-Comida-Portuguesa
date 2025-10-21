@@ -14,6 +14,7 @@ export default function PedidosPage() {
   const hoje = useStableToday();
   const { grouped, isLoading, setStatus, removeItem } = usePedidosHoje(hoje);
 
+
   return (
     <div className="min-h-screen bg-[#F5F5F5]">
       <NavBar />

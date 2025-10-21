@@ -5,6 +5,9 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 import { OrderCard } from "./OrderCard";
 import type { GroupedPedidos } from "../types";
 import type { StatusPedido } from "@prisma/client";
+import { useTotaisEntreguesHoje } from "../hooks/useTotaisEntreguesHoje";
+import { TotaisEntregues } from "./TotaisEntregues";
+import { useStableToday } from "../hooks/useStableToday";
 
 export function OrdersTabs({
   active,
@@ -21,6 +24,8 @@ export function OrdersTabs({
   onRemoveItem: (pedidoItemId: string) => void;
   isLoading: boolean;
 }) {
+  const hoje = useStableToday();
+  const { rows, totalGeral, isLoading: isLoadingTotais } = useTotaisEntreguesHoje(hoje);
   return (
     <Tabs value={active} onValueChange={(v) => onChange(v as StatusPedido)}>
       <TabsList className="bg-transparent p-0">
@@ -41,11 +46,29 @@ export function OrdersTabs({
         ) : grouped[active].length === 0 ? (
           <div className="rounded-lg border border-dashed p-10 text-center text-neutral-500">Nenhum pedido aqui.</div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {grouped[active].map((p) => (
-              <OrderCard key={p.id} order={p} onChangeStatus={(next) => onChangeStatus(p.id, next)} onRemoveItem={onRemoveItem} />
-            ))}
-          </div>
+                 <>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+              {grouped[active].map((p) => (
+                <OrderCard
+                  key={p.id}
+                  order={p}
+                  onChangeStatus={(next) => onChangeStatus(p.id, next)}
+                  onRemoveItem={onRemoveItem}
+                />
+              ))}
+            </div>
+
+            {active === "ENTREGUE" && rows.length > 0 && (
+              <TotaisEntregues
+                rows={rows.map((c) => ({
+                  numeroMesa: c.numeroMesa,
+                  nomeCliente: c.nomeCliente,
+                  total: c.total,
+                }))}
+                totalGeral={totalGeral}
+              />
+            )}
+          </>
         )}
       </TabsContent>
     </Tabs>

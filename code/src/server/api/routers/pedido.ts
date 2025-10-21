@@ -34,6 +34,10 @@ const removeItemInput = z.object({
   pedidoItemId: z.string().min(1),
 });
 
+const totaisInput = z.object({
+  data: z.date().optional(), // default: hoje
+});
+
 export const pedidoRouter = createTRPCRouter({
   create: publicProcedure
     .input(createPedidoInput)
@@ -197,5 +201,52 @@ export const pedidoRouter = createTRPCRouter({
       });
 
       return pedidoAtualizado;
+    }),
+
+  totaisPorComanda: publicProcedure
+    .input(totaisInput)
+    .query(async ({ input }) => {
+      // calcula 00:00→23:59 local
+      const base = input.data ?? new Date();
+      const start = new Date(base); start.setHours(0,0,0,0);
+      const end = new Date(base);   end.setHours(23,59,59,999);
+
+      // busca pedidos ENTREGUE do dia com itens
+      const pedidos = await db.pedido.findMany({
+        where: {
+          status: "ENTREGUE",
+          dataCriacao: { gte: start, lte: end },
+        },
+        include: {
+          comanda: { select: { id: true, numeroMesa: true, nomeCliente: true } },
+          itens: {
+            include: { item: { select: { id: true, nome: true, preco: true } } },
+          },
+        },
+        orderBy: { dataCriacao: "asc" },
+      });
+
+      // agrega por comanda
+      const map = new Map<string, {
+        comandaId: string; numeroMesa: number; nomeCliente: string; total: number;
+      }>();
+
+      for (const p of pedidos) {
+        const parcial = p.itens.reduce((acc, it) => acc + it.quantidade * it.item.preco, 0);
+        const k = p.comanda.id;
+        const prev = map.get(k);
+        if (prev) prev.total += parcial;
+        else map.set(k, {
+          comandaId: k,
+          numeroMesa: p.comanda.numeroMesa,
+          nomeCliente: p.comanda.nomeCliente,
+          total: parcial,
+        });
+      }
+
+      const rows = Array.from(map.values()).sort((a, b) => a.numeroMesa - b.numeroMesa);
+      const totalGeral = rows.reduce((acc, r) => acc + r.total, 0);
+
+      return { rows, totalGeral };
     }),
 });
