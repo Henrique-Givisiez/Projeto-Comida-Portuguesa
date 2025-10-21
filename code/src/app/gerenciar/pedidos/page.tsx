@@ -27,6 +27,7 @@ export default function PedidosPage() {
           isLoading={isLoading}
           onChangeStatus={setStatus}
           onRemoveItem={removeItem}
+          hoje={hoje}
         />
       </div>
     </div>

@@ -17,25 +17,26 @@ export function OrdersTabs({
   onRemoveItem,
   isLoading,
 }: {
-  active: StatusPedido;
-  onChange: (t: StatusPedido) => void;
-  grouped: GroupedPedidos;
-  onChangeStatus: (id: string, next: StatusPedido) => void;
-  onRemoveItem: (pedidoItemId: string) => void;
-  isLoading: boolean;
+    active: StatusPedido;
+    onChange: (t: StatusPedido) => void;
+    grouped: GroupedPedidos;
+    onChangeStatus: (id: string, next: StatusPedido) => void;
+    onRemoveItem: (pedidoItemId: string) => void;
+    isLoading: boolean;
+    hoje: Date,
 }) {
   const hoje = useStableToday();
-  const { rows, totalGeral, isLoading: isLoadingTotais } = useTotaisEntreguesHoje(hoje);
+  const { rows, totalGeral } = useTotaisEntreguesHoje(hoje);
   return (
     <Tabs value={active} onValueChange={(v) => onChange(v as StatusPedido)}>
-      <TabsList className="bg-transparent p-0">
-        <TabsTrigger value="EM_ANDAMENTO" className="data-[state=active]:bg-amber-600 data-[state=active]:text-white">
+      <TabsList className="bg-transparent p-0 gap-4">
+        <TabsTrigger value="EM_ANDAMENTO" className="data-[state=active]:bg-amber-600 data-[state=active]:text-white cursor-pointer">
           Em Andamento
         </TabsTrigger>
-        <TabsTrigger value="ENTREGUE" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white">
+        <TabsTrigger value="ENTREGUE" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white cursor-pointer">
           Entregues
         </TabsTrigger>
-        <TabsTrigger value="CANCELADO" className="data-[state=active]:bg-rose-600 data-[state=active]:text-white">
+        <TabsTrigger value="CANCELADO" className="data-[state=active]:bg-rose-600 data-[state=active]:text-white cursor-pointer">
           Cancelados
         </TabsTrigger>
       </TabsList>
@@ -46,7 +47,7 @@ export function OrdersTabs({
         ) : grouped[active].length === 0 ? (
           <div className="rounded-lg border border-dashed p-10 text-center text-neutral-500">Nenhum pedido aqui.</div>
         ) : (
-                 <>
+          <>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {grouped[active].map((p) => (
                 <OrderCard
