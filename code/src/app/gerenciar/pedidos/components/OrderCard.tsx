@@ -22,9 +22,11 @@ function StatusPill({ status }: { status: StatusPedido }) {
 export function OrderCard({
   order,
   onChangeStatus,
+  onRemoveItem,
 }: {
   order: PedidoDTO;
   onChangeStatus: (next: StatusPedido) => void;
+  onRemoveItem: (pedidoItemId: string) => void;
 }) {
   const [open, setOpen] = useState(false);
   const total = totalPedido(order);
@@ -65,7 +67,7 @@ export function OrderCard({
         </DropdownMenu>
       </CardFooter>
 
-      <OrderDetailsDialog open={open} onOpenChange={setOpen} order={order} />
+      <OrderDetailsDialog open={open} onOpenChange={setOpen} order={order} onRemoveItem={onRemoveItem} />
     </Card>
   );
 }

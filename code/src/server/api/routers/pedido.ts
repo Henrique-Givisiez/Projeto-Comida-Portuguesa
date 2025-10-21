@@ -30,6 +30,10 @@ const updatePedidoInput = z.object({
   comandaId: z.string().optional(),
 });
 
+const removeItemInput = z.object({
+  pedidoItemId: z.string().min(1),
+});
+
 export const pedidoRouter = createTRPCRouter({
   create: publicProcedure
     .input(createPedidoInput)
@@ -156,5 +160,42 @@ export const pedidoRouter = createTRPCRouter({
       });
 
       return deleted;
+    }),
+
+  removeItem: publicProcedure
+    .input(removeItemInput)
+    .mutation(async ({ input }) => {
+      // 1) descobre o pedido do item e valida status
+      const item = await db.pedidoItem.findUnique({
+        where: { id: input.pedidoItemId },
+        include: { pedido: true },
+      });
+
+      if (!item) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Item não encontrado." });
+      }
+      if (item.pedido.status !== "EM_ANDAMENTO") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Só é possível remover itens de pedidos EM_ANDAMENTO.",
+        });
+      }
+
+      // 2) apaga o item
+      await db.pedidoItem.delete({ where: { id: input.pedidoItemId } });
+
+      // 3) retorna o pedido atualizado (incluindo itens)
+      const pedidoAtualizado = await db.pedido.findUnique({
+        where: { id: item.pedidoId },
+        include: {
+          comanda: { select: { id: true, numeroMesa: true, nomeCliente: true } },
+          itens: {
+            include: { item: { select: { id: true, nome: true, preco: true } } },
+            orderBy: { dataCriacao: "asc" },
+          },
+        },
+      });
+
+      return pedidoAtualizado;
     }),
 });

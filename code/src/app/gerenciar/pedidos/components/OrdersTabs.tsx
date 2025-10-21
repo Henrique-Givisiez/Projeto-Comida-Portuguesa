@@ -11,12 +11,14 @@ export function OrdersTabs({
   onChange,
   grouped,
   onChangeStatus,
+  onRemoveItem,
   isLoading,
 }: {
   active: StatusPedido;
   onChange: (t: StatusPedido) => void;
   grouped: GroupedPedidos;
   onChangeStatus: (id: string, next: StatusPedido) => void;
+  onRemoveItem: (pedidoItemId: string) => void;
   isLoading: boolean;
 }) {
   return (
@@ -41,7 +43,7 @@ export function OrdersTabs({
         ) : (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {grouped[active].map((p) => (
-              <OrderCard key={p.id} order={p} onChangeStatus={(next) => onChangeStatus(p.id, next)} />
+              <OrderCard key={p.id} order={p} onChangeStatus={(next) => onChangeStatus(p.id, next)} onRemoveItem={onRemoveItem} />
             ))}
           </div>
         )}

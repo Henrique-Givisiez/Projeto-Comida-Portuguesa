@@ -35,9 +35,19 @@ export function usePedidosHoje(hoje: Date) {
     },
   });
 
+  const removeItemMut = api.pedido.removeItem.useMutation({
+    onSuccess: async () => {
+      await utils.pedido.getByParam.invalidate({ dataCriacao: hoje });
+    },
+  });
+
   function setStatus(pedidoId: string, status: StatusPedido) {
     updateStatus.mutate({ id: pedidoId, status });
   }
 
-  return { pedidos, grouped, canClose, isLoading, isFetching, error, refetch, setStatus };
+  function removeItem(pedidoItemId: string) {
+    removeItemMut.mutate({ pedidoItemId });
+  }
+
+  return { pedidos, grouped, canClose, isLoading, isFetching, error, refetch, setStatus, removeItem };
 }

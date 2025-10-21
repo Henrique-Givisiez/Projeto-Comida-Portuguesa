@@ -3,21 +3,25 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "~/components/ui/dialog";
 import { Button } from "~/components/ui/button";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "~/components/ui/alert-dialog";
+import { Trash2 } from "lucide-react";
 import type { PedidoDTO } from "../types";
-import { formatBRL } from "../utils/format";
+import { formatBRL, timeSince } from "../utils/format";
 import { totalPedido } from "../utils/totals";
-import { timeSince } from "../utils/format";
 
 export function OrderDetailsDialog({
   open,
   onOpenChange,
   order,
+  onRemoveItem, // ⬅ novo prop
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
   order: PedidoDTO;
+  onRemoveItem: (pedidoItemId: string) => void;
 }) {
   const total = totalPedido(order);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -31,13 +35,44 @@ export function OrderDetailsDialog({
         <div className="space-y-3">
           {order.itens.map((it) => (
             <div key={it.id} className="flex items-start justify-between rounded-lg border p-3">
-              <div>
+              <div className="pr-3">
                 <div className="font-medium">
                   {it.quantidade}× {it.item.nome}
                 </div>
-                {it.observacao && <div className="text-sm text-neutral-500">Obs: {it.observacao}</div>}
+                {it.observacao && (
+                  <div className="text-sm text-neutral-500">Obs: {it.observacao}</div>
+                )}
               </div>
-              <div className="font-medium">{formatBRL(it.quantidade * it.item.preco)}</div>
+
+              <div className="flex items-center gap-3">
+                <div className="font-medium">{formatBRL(it.quantidade * it.item.preco)}</div>
+
+                {/* Botão Excluir com confirmação */}
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" size="icon" aria-label="Excluir item">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Excluir item?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Esta ação remove o item deste pedido. Não é possível desfazer.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => onRemoveItem(it.id)}
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        Remover
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
             </div>
           ))}
         </div>

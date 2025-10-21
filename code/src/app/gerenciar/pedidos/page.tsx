@@ -12,7 +12,7 @@ import { usePedidosHoje } from "./hooks/usePedidosHoje";
 export default function PedidosPage() {
   const [active, setActive] = useState<StatusPedido>("EM_ANDAMENTO");
   const hoje = useStableToday();
-  const { grouped, isLoading, setStatus } = usePedidosHoje(hoje);
+  const { grouped, isLoading, setStatus, removeItem } = usePedidosHoje(hoje);
 
   return (
     <div className="min-h-screen bg-[#F5F5F5]">
@@ -25,6 +25,7 @@ export default function PedidosPage() {
           grouped={grouped}
           isLoading={isLoading}
           onChangeStatus={setStatus}
+          onRemoveItem={removeItem}
         />
       </div>
     </div>
