@@ -10,12 +10,11 @@ import { api } from "~/utils/api";
 import { toast } from "sonner";
 
 export function EncerrarAtendimento() {
-    const [password, setPassword] = useState('');
     const [isDialogOpen, setDialogOpen] = useState(false);
     const [adminPassword, setAdminPassword] = useState('');
 
     const verificarSenhaGarcom = api.variavel.verificar.useQuery(
-    { chave: "senhaGarcom", valor: password },
+    { chave: "senhaGarcom", valor: adminPassword },
     { enabled: false }
     );
     
@@ -25,17 +24,17 @@ export function EncerrarAtendimento() {
 
             if (!senhaValida) {
                 toast.error("Senha incorreta. Tente novamente.");
-                setPassword("");
+                setAdminPassword("");
                 return;
             }
 
             toast.success(`Atendimento encerrado com sucesso!`);
             setDialogOpen(false);
-            setPassword("");
-            } catch {
-                toast.error("Erro ao verificar a senha. Tente novamente.");
-                setPassword("");
-            }
+            setAdminPassword("");
+        } catch {
+            toast.error("Erro ao verificar a senha. Tente novamente.");
+            setAdminPassword("");
+        }
     }
 
     return (
