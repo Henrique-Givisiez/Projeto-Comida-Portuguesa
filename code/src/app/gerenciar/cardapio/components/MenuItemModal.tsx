@@ -66,6 +66,10 @@ export function MenuItemModal({ open, onClose, onSave, item }: MenuItemModalProp
     }
   }, [open, item]);
 
+  type UploadResponse = {
+    path: string;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -82,7 +86,7 @@ export function MenuItemModal({ open, onClose, onSave, item }: MenuItemModalProp
         body: formData,
       });
 
-      const data = await res.json();
+      const data = (await res.json()) as UploadResponse;
 
       imagePath = data.path;
     }
@@ -94,7 +98,6 @@ export function MenuItemModal({ open, onClose, onSave, item }: MenuItemModalProp
 
     onClose();
   };
-
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
