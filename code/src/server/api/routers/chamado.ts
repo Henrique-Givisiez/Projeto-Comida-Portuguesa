@@ -27,6 +27,20 @@ export const chamadoRouter = createTRPCRouter({
       return chamado;
     }),
 
+  getAll: publicProcedure.query(async () => {
+    return db.chamado.findMany({
+      where: {
+        finalizado: false,
+      },
+      include: {
+        comanda: true,
+      },
+      orderBy: {
+        dataChamado: "asc",
+      },
+    });
+  }),
+
   update: publicProcedure
     .input(updateChamadoInput)
     .mutation(async ({ input }) => {
