@@ -5,9 +5,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../../../../components/ui/table";
-import { Badge } from "../../../../../components/ui/badge";
-import { Button } from "../../../../../components/ui/button";
+} from "../../../../components/ui/table";
+import { Badge } from "../../../../components/ui/badge";
+import { Button } from "../../../../components/ui/button";
 import { Pencil, Trash2, ToggleLeft, ToggleRight, ImageIcon } from "lucide-react";
 import type { RouterOutputs } from "~/trpc/react";
 import Image from "next/image";

@@ -18,7 +18,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../../../../components/ui/select";
+} from "../../../../components/ui/select";
 import Image from "next/image";
 import type { RouterOutputs } from "~/trpc/react";
 
@@ -66,25 +66,50 @@ export function MenuItemModal({ open, onClose, onSave, item }: MenuItemModalProp
     }
   }, [open, item]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!form.nome || !form.categoria || form.preco <= 0) return;
 
-    onSave(form);
+    let imagePath = form.imageURL;
+
+    if (imageFile) {
+      const formData = new FormData();
+      formData.append("file", imageFile);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      imagePath = data.path;
+    }
+
+    onSave({
+      ...form,
+      imageURL: imagePath,
+    });
+
     onClose();
   };
+
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setForm((prev) => ({
-        ...prev,
-        imageURL: url,
-      }));
-    }
+    if (!file) return;
+
+    setImageFile(file);
+
+    const preview = URL.createObjectURL(file);
+
+    setForm((prev) => ({
+      ...prev,
+      imageURL: preview, // apenas preview
+    }));
   };
 
   return (

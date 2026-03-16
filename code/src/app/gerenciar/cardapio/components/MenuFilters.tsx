@@ -1,11 +1,11 @@
-import { Input } from "../../../../_components/input";
+import { Input } from "../../../_components/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../../../../components/ui/select";
+} from "../../../../components/ui/select";
 import { Search } from "lucide-react";
 import { CATEGORY_LABELS } from "./MenuTable";
 
