@@ -3,10 +3,10 @@ import { useState, useMemo } from "react";
 import Button from "../../_components/button";
 import { Plus } from "lucide-react";
 import { useMenuItems } from "./hooks/useMenuItems";
-import { MenuFilters } from "./components/menu/MenuFilters";
-import { MenuTable } from "./components/menu/MenuTable";
-import { MenuItemModal } from "./components/menu/MenuItemModal";
-import { DeleteConfirmDialog } from "./components/menu/DeleteConfirmDialog";
+import { MenuFilters } from "./components/MenuFilters";
+import { MenuTable } from "./components/MenuTable";
+import { MenuItemModal } from "./components/MenuItemModal";
+import { DeleteConfirmDialog } from "./components/DeleteConfirmDialog";
 import type { RouterOutputs } from "~/trpc/react";
 import { NavBar } from "~/app/_components/navbar";
 
