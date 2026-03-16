@@ -1,7 +1,7 @@
 // src/gerenciar/pedidos/hooks/usePedidosHoje.ts
 import { useMemo } from "react";
 import { api } from "~/trpc/react";
-import type { GroupedPedidos, PedidoDTO } from "../types";
+import type { GroupedPedidos } from "../types";
 import type { StatusPedido } from "@prisma/client";
 
 export function usePedidosHoje(hoje: Date) {

@@ -8,7 +8,7 @@ import { Button } from "~/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
 import { Eye, Clock, ChevronDown } from "lucide-react";
 import type { PedidoDTO } from "../types";
-import { StatusPedido } from "@prisma/client";
+import type { StatusPedido } from "@prisma/client";
 import { formatBRL, timeSince } from "../utils/format";
 import { totalPedido } from "../utils/totals";
 import { OrderDetailsDialog } from "./OrderDetailsDialog";

@@ -26,7 +26,7 @@ const updateItemInput = z.object({
   nome: z.string().optional(),
   descricao: z.string().optional(),
   preco: z.number().positive().optional(),
-  imageURL: z.string().url().optional(),
+  imageURL: z.string().optional(),
   categoria: z.enum(["ENTRADAS", "PRATOS_CASA", "PEIXES", "CARNES", "BEBIDAS", "SOBREMESAS"]).optional(),
   disponivel: z.boolean().optional(),
 });
@@ -109,5 +109,24 @@ export const itemRouter = createTRPCRouter({
     });
 
     return itemDeletado;
+  }),
+
+  toggleDisponivel: publicProcedure
+  .input(z.string())
+  .mutation(async ({ input }) => {
+    const item = await db.item.findUnique({
+      where: { id: input },
+    });
+
+    if (!item) {
+      throw new Error("Item não encontrado.");
+    }
+
+    return db.item.update({
+      where: { id: input },
+      data: {
+        disponivel: !item.disponivel,
+      },
+    });
   }),
 });

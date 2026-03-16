@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { NavBar } from "~/app/_components/navbar";
-import { StatusPedido } from "@prisma/client";
+import type { StatusPedido } from "@prisma/client";
 import { OrdersHeader } from "./components/OrdersHeader";
 import { OrdersTabs } from "./components/OrdersTabs";
 import { useStableToday } from "./hooks/useStableToday";
@@ -12,7 +12,9 @@ import { usePedidosHoje } from "./hooks/usePedidosHoje";
 export default function PedidosPage() {
   const [active, setActive] = useState<StatusPedido>("EM_ANDAMENTO");
   const hoje = useStableToday();
-  const { grouped, isLoading, setStatus, removeItem } = usePedidosHoje(hoje);
+  const ontem = new Date(hoje);
+  ontem.setDate(hoje.getDate() - 1);
+  const { grouped, isLoading, setStatus, removeItem } = usePedidosHoje(ontem);
 
 
   return (
@@ -27,7 +29,7 @@ export default function PedidosPage() {
           isLoading={isLoading}
           onChangeStatus={setStatus}
           onRemoveItem={removeItem}
-          hoje={hoje}
+          hoje={ontem}
         />
       </div>
     </div>
